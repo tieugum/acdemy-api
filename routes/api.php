@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('categories', 'Categories\\CategoryController@index');
+Route::get('categories/slug/{slug}', 'Categories\\CategoryController@findBySlug');
+
 Route::group(['middleware' => 'guest'], function() {
     Route::post('register', 'Auth\RegisterController@register');
     Route::post('login', 'Auth\LoginController@login');
@@ -18,4 +21,13 @@ Route::group(['middleware' => 'auth'], function() {
     // Setting user
     Route::put('settings/profile', 'Users\\SettingController@updateProfile');
     Route::put('settings/password', 'Users\\SettingController@updatePassword');
+
+    // Category
+    Route::group(['middleware' => 'admin'], function () {
+        Route::post('categories', 'Categories\\CategoryController@store');
+        Route::get('categories/{category}', 'Categories\\CategoryController@show');
+        Route::put('categories/{category}', 'Categories\\CategoryController@update');
+        Route::delete('categories/{category}', 'Categories\\CategoryController@destroy');
+    });
+
 });

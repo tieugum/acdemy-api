@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Str;
 
-class UserResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,21 +16,19 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'role' => $this->role,
             'name' => $this->name,
-            'slug' => Str::slug($this->name),
-            'email' => $this->email,
-            'tagline' => $this->tagline,
-            'about' => $this->about,
-            'socials' => [
-                'facebook' => $this->facebook,
-                'twitter' => $this->twitter,
-                'youtube' => $this->youtube
-            ],
+            'slug' => $this->slug,
+            $this->mergeWhen(! $this->parent_id, [
+                'children' => self::collection($this->whenLoaded('children'))
+            ]),
             'created_dates' => [
                 'created_at' => $this->created_at,
                 'created_at_human' => $this->created_at->diffForHumans()
-            ]
+            ],
+            'updated_dates' => [
+                'updated_at' => $this->updated_at,
+                'updated_at_human' => $this->updated_at->diffForHumans()
+            ],
         ];
     }
 }
